@@ -21,7 +21,7 @@ const App = () => {
 					<ContenedorBotones>
 						<Boton to='/categorias'>Categorías</Boton>
 						<Boton to='/lista'>Lista de Gastos</Boton>
-						<Boton>X</Boton>
+						<Boton to='/'>X</Boton>
 					</ContenedorBotones>
 				</ContenedorHeader>
 			</Header>
