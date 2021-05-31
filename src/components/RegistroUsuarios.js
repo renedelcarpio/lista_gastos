@@ -11,6 +11,7 @@ import { ReactComponent as SvgLogin } from '../images/registro.svg';
 import styled from 'styled-components';
 import { auth } from '../firebase/firebaseConfig';
 import { useHistory } from 'react-router-dom';
+import Alerta from '../elements/Alerta';
 
 const Svg = styled(SvgLogin)`
 	width: 100%;
@@ -20,10 +21,15 @@ const Svg = styled(SvgLogin)`
 
 const RegistroUsuarios = () => {
 	const history = useHistory();
+
 	// Se definen estados (que pasaremos al value), uno para cada input
 	const [correo, establecerCorreo] = useState('');
 	const [password, establecerPassword] = useState('');
 	const [password2, establecerPassword2] = useState('');
+
+	// Definimos el estado para el mensaje de éxito o error
+	const [estadoAlerta, cambiarEstadoAlerta] = useState(false);
+	const [alerta, cambiarAlerta] = useState({});
 
 	// Definimos los valores que ingrese el usuario
 	const handleChange = (e) => {
@@ -46,18 +52,34 @@ const RegistroUsuarios = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		// Configuramos el estado de nuestro mensaje de alerta
+		cambiarEstadoAlerta(false);
+		cambiarAlerta({});
+
 		// Comprobamos del lado del cliente que los datos sean válidos.
 		const expresionRegular = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
 		if (!expresionRegular.test(correo)) {
-			console.log('Por favor ingresa el correo electronico correctamente');
+			cambiarEstadoAlerta(true);
+			cambiarAlerta({
+				tipo: 'error',
+				mensaje: 'Por favor ingresa un correo electrónico válido',
+			});
 			return;
 		}
 		if (correo === '' || password === '' || password2 === '') {
-			console.log('Por favor ingresa todos los datos');
+			cambiarEstadoAlerta(true);
+			cambiarAlerta({
+				tipo: 'error',
+				mensaje: 'Por favor ingresa todos los datos',
+			});
 			return;
 		}
 		if (password !== password2) {
-			console.log('Las contraseñas no son iguales');
+			cambiarEstadoAlerta(true);
+			cambiarAlerta({
+				tipo: 'error',
+				mensaje: 'Las contraseñas no son iguales',
+			});
 			return;
 		}
 
@@ -65,8 +87,9 @@ const RegistroUsuarios = () => {
 
 		try {
 			await auth.createUserWithEmailAndPassword(correo, password);
-			history.push('/');
+			history.push('/iniciar-sesion');
 		} catch (error) {
+			cambiarEstadoAlerta(true);
 			let mensaje;
 			switch (error.code) {
 				case 'auth/invalid-password':
@@ -82,7 +105,10 @@ const RegistroUsuarios = () => {
 					mensaje = 'Hubo un error al intentar crear la cuenta';
 					break;
 			}
-			console.log(mensaje);
+			cambiarAlerta({
+				tipo: 'error',
+				mensaje: mensaje,
+			});
 		}
 	};
 
@@ -130,6 +156,12 @@ const RegistroUsuarios = () => {
 					</Boton>
 				</ContenedorBoton>
 			</Formulario>
+			<Alerta
+				tipo={alerta.tipo}
+				mensaje={alerta.mensaje}
+				estadoAlerta={estadoAlerta}
+				cambiarEstadoAlerta={cambiarEstadoAlerta}
+			/>
 		</>
 	);
 };
