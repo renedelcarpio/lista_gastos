@@ -9,6 +9,8 @@ import {
 } from '../elements/ElementosDeFormulario';
 import { ReactComponent as SvgLogin } from '../images/registro.svg';
 import styled from 'styled-components';
+import { auth } from '../firebase/firebaseConfig';
+import { useHistory } from 'react-router-dom';
 
 const Svg = styled(SvgLogin)`
 	width: 100%;
@@ -17,6 +19,7 @@ const Svg = styled(SvgLogin)`
 `;
 
 const RegistroUsuarios = () => {
+	const history = useHistory();
 	// Se definen estados (que pasaremos al value), uno para cada input
 	const [correo, establecerCorreo] = useState('');
 	const [password, establecerPassword] = useState('');
@@ -40,10 +43,10 @@ const RegistroUsuarios = () => {
 	};
 
 	// Configuramos la funcionalidad del submit y validamos si los datos que ingresó el usuario son correctos
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		// Comprobamos del lado del cliente que el correo sea válido
+		// Comprobamos del lado del cliente que los datos sean válidos.
 		const expresionRegular = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
 		if (!expresionRegular.test(correo)) {
 			console.log('Por favor ingresa el correo electronico correctamente');
@@ -57,7 +60,30 @@ const RegistroUsuarios = () => {
 			console.log('Las contraseñas no son iguales');
 			return;
 		}
-		console.log('El usuario fue registrado con éxito');
+
+		// Con la función createUserWith... creamos el usuario en firebase. Luego validamos según los errores del lado del servidor.
+
+		try {
+			await auth.createUserWithEmailAndPassword(correo, password);
+			history.push('/');
+		} catch (error) {
+			let mensaje;
+			switch (error.code) {
+				case 'auth/invalid-password':
+					mensaje = 'La contraseña tiene que ser de al menos 6 caracteres';
+					break;
+				case 'auth/email-already-in-use':
+					mensaje = 'Ya existe una cuenta con éste correo electrónico';
+					break;
+				case 'auth/invalid-email':
+					mensaje = 'El correo electrónico no es válido';
+					break;
+				default:
+					mensaje = 'Hubo un error al intentar crear la cuenta';
+					break;
+			}
+			console.log(mensaje);
+		}
 	};
 
 	return (
