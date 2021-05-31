@@ -7,6 +7,7 @@ import {
 	ContenedorBotones,
 } from './elements/Header';
 import Boton from './elements/Boton';
+import BotonCerrarSesion from './elements/BotonCerrarSesion';
 
 const App = () => {
 	return (
@@ -21,7 +22,7 @@ const App = () => {
 					<ContenedorBotones>
 						<Boton to='/categorias'>Categorías</Boton>
 						<Boton to='/lista'>Lista de Gastos</Boton>
-						<Boton to='/'>X</Boton>
+						<BotonCerrarSesion />
 					</ContenedorBotones>
 				</ContenedorHeader>
 			</Header>
