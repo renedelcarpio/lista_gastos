@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Header, Titulo, ContenedorHeader } from '../elements/Header';
 import Boton from '../elements/Boton';
@@ -17,6 +17,49 @@ const Svg = styled(SvgLogin)`
 `;
 
 const RegistroUsuarios = () => {
+	// Se definen estados (que pasaremos al value), uno para cada input
+	const [correo, establecerCorreo] = useState('');
+	const [password, establecerPassword] = useState('');
+	const [password2, establecerPassword2] = useState('');
+
+	// Definimos los valores que ingrese el usuario
+	const handleChange = (e) => {
+		switch (e.target.name) {
+			case 'email':
+				establecerCorreo(e.target.value);
+				break;
+			case 'password':
+				establecerPassword(e.target.value);
+				break;
+			case 'password2':
+				establecerPassword2(e.target.value);
+				break;
+			default:
+				break;
+		}
+	};
+
+	// Configuramos la funcionalidad del submit y validamos si los datos que ingresó el usuario son correctos
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		// Comprobamos del lado del cliente que el correo sea válido
+		const expresionRegular = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
+		if (!expresionRegular.test(correo)) {
+			console.log('Por favor ingresa el correo electronico correctamente');
+			return;
+		}
+		if (correo === '' || password === '' || password2 === '') {
+			console.log('Por favor ingresa todos los datos');
+			return;
+		}
+		if (password !== password2) {
+			console.log('Las contraseñas no son iguales');
+			return;
+		}
+		console.log('El usuario fue registrado con éxito');
+	};
+
 	return (
 		<>
 			<Helmet>
@@ -32,14 +75,28 @@ const RegistroUsuarios = () => {
 				</ContenedorHeader>
 			</Header>
 
-			<Formulario>
+			<Formulario onSubmit={handleSubmit}>
 				<Svg />
-				<Input type='email' name='email' placeholder='Correo Electrónico' />
-				<Input type='password' name='password' placeholder='Contraseña' />
+				<Input
+					type='email'
+					name='email'
+					placeholder='Correo Electrónico'
+					value={correo}
+					onChange={handleChange}
+				/>
+				<Input
+					type='password'
+					name='password'
+					placeholder='Contraseña'
+					value={password}
+					onChange={handleChange}
+				/>
 				<Input
 					type='password'
 					name='password2'
 					placeholder='Repetir la Contraseña'
+					value={password2}
+					onChange={handleChange}
 				/>
 				<ContenedorBoton>
 					<Boton as='button' primario type='submit'>
