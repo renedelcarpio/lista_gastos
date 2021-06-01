@@ -10,12 +10,17 @@ import {
 	ContenedorBoton,
 } from '../elements/ElementosDeFormulario';
 import DatePicker from './DatePicker';
+import agregarGasto from '../firebase/agregarGasto';
+import fromUnixTime from 'date-fns/fromUnixTime';
+import getUnixTime from 'date-fns/getUnixTime';
+import { useAuth } from '../context/AuthContext';
 
 const FormularioGasto = () => {
 	const [inputDescripcion, cambiarInputDescripcion] = useState('');
 	const [inputCantidad, cambiarInputCantidad] = useState('');
 	const [categoria, cambiarCategoria] = useState('hogar');
 	const [fecha, cambiarFecha] = useState(new Date());
+	const { usuario } = useAuth();
 
 	const handleChange = (e) => {
 		if (e.target.name === 'descripcion') {
@@ -25,8 +30,21 @@ const FormularioGasto = () => {
 		}
 	};
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		let cantidad = parseFloat(inputCantidad).toFixed(2);
+
+		agregarGasto({
+			categoria: categoria,
+			descripcion: inputDescripcion,
+			cantidad: cantidad,
+			fecha: getUnixTime(fecha),
+			uidUsuario: usuario.uid,
+		});
+	};
+
 	return (
-		<Formulario>
+		<Formulario onSubmit={handleSubmit}>
 			<ContenedorFiltros>
 				<SelectCategorias
 					categoria={categoria}
