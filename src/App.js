@@ -8,6 +8,7 @@ import {
 } from './elements/Header';
 import Boton from './elements/Boton';
 import BotonCerrarSesion from './elements/BotonCerrarSesion';
+import FormularioGasto from './components/FormularioGasto';
 
 const App = () => {
 	return (
@@ -26,6 +27,7 @@ const App = () => {
 					</ContenedorBotones>
 				</ContenedorHeader>
 			</Header>
+			<FormularioGasto />
 		</>
 	);
 };
