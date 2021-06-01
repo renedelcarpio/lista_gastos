@@ -9,11 +9,13 @@ import {
 	InputGrande,
 	ContenedorBoton,
 } from '../elements/ElementosDeFormulario';
+import DatePicker from './DatePicker';
 
 const FormularioGasto = () => {
 	const [inputDescripcion, cambiarInputDescripcion] = useState('');
 	const [inputCantidad, cambiarInputCantidad] = useState('');
 	const [categoria, cambiarCategoria] = useState('hogar');
+	const [fecha, cambiarFecha] = useState(new Date());
 
 	const handleChange = (e) => {
 		if (e.target.name === 'descripcion') {
@@ -30,7 +32,7 @@ const FormularioGasto = () => {
 					categoria={categoria}
 					cambiarCategoria={cambiarCategoria}
 				/>
-				<p>Date picker</p>
+				<DatePicker fecha={fecha} cambiarFecha={cambiarFecha} />
 			</ContenedorFiltros>
 
 			<div>
