@@ -26,9 +26,32 @@ import { ReactComponent as IconoEditar } from '../images/editar.svg';
 import { ReactComponent as IconoBorrar } from '../images/borrar.svg';
 import { Link } from 'react-router-dom';
 import Boton from '../elements/Boton';
+import { format, fromUnixTime } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const ListaGastos = () => {
 	const [gastos] = useObtenerGastos();
+
+	// Con esta función traemos la fecha y le damos formato e idioma
+	const formatearFecha = (fecha) => {
+		return format(fromUnixTime(fecha), "dd 'de' MMMM 'de' yyyy", {
+			locale: es,
+		});
+	};
+
+	// Con esta funcion comparamos las fechas para ver si son iguales
+	const fechaEsIgual = (gastos, index, gasto) => {
+		if (index !== 0) {
+			const fechaActual = formatearFecha(gasto.fecha);
+			const fechaGastoAnterior = formatearFecha(gastos[index - 1].fecha);
+
+			if (fechaActual === fechaGastoAnterior) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	};
 
 	return (
 		<>
@@ -42,27 +65,33 @@ const ListaGastos = () => {
 			</Header>
 
 			<Lista>
-				{gastos.map((gasto) => {
+				{gastos.map((gasto, index) => {
 					return (
-						<ElementoLista key={gasto.id}>
-							<Categoria>
-								<IconoCategoria id={gasto.categoria} />
-								{gasto.categoria}
-							</Categoria>
+						<div key={gasto.id}>
+							{!fechaEsIgual(gastos, index, gasto) && (
+								<Fecha>{formatearFecha(gasto.fecha)}</Fecha>
+							)}
 
-							<Descripcion>{gasto.descripcion}</Descripcion>
+							<ElementoLista key={gasto.id}>
+								<Categoria>
+									<IconoCategoria id={gasto.categoria} />
+									{gasto.categoria}
+								</Categoria>
 
-							<Valor>{convertirAMoneda(gasto.cantidad)}</Valor>
+								<Descripcion>{gasto.descripcion}</Descripcion>
 
-							<ContenedorBotones>
-								<BotonAccion as={Link} to={`/editar/${gasto.id}`}>
-									<IconoEditar />
-								</BotonAccion>
-								<BotonAccion>
-									<IconoBorrar />
-								</BotonAccion>
-							</ContenedorBotones>
-						</ElementoLista>
+								<Valor>{convertirAMoneda(gasto.cantidad)}</Valor>
+
+								<ContenedorBotones>
+									<BotonAccion as={Link} to={`/editar/${gasto.id}`}>
+										<IconoEditar />
+									</BotonAccion>
+									<BotonAccion>
+										<IconoBorrar />
+									</BotonAccion>
+								</ContenedorBotones>
+							</ElementoLista>
+						</div>
 					);
 				})}
 
