@@ -42,7 +42,7 @@ const Index = () => {
 							<RutaPrivada path='/lista'>
 								<ListaGastos />
 							</RutaPrivada>
-							<RutaPrivada path='/editar:id'>
+							<RutaPrivada path='/editar/:id'>
 								<EditarGasto />
 							</RutaPrivada>
 							<RutaPrivada path='/'>
