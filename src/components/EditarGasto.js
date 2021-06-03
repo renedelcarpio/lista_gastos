@@ -11,8 +11,6 @@ const EditarGasto = () => {
 	const { id } = useParams();
 	const [gasto] = useObtenerGasto(id);
 
-	console.log(gasto);
-
 	return (
 		<>
 			<Helmet>
@@ -20,10 +18,10 @@ const EditarGasto = () => {
 			</Helmet>
 
 			<Header>
-				<BtnRegresar />
+				<BtnRegresar ruta='/lista' />
 				<Titulo>Editar Gasto</Titulo>
 			</Header>
-			<FormularioGasto />
+			<FormularioGasto gasto={gasto} />
 			<BarraTotalGastado />
 		</>
 	);
