@@ -12,12 +12,12 @@ const useObtenerGastosDelMes = () => {
 		const finDeMes = getUnixTime(endOfMonth(new Date()));
 
 		if (usuario) {
-			const darDeBaja = db
+			const unsubscribe = db
 				.collection('gastos')
 				.orderBy('fecha', 'desc')
-				.where('gastos', '>=', inicioDeMes)
-				.where('gastos', '<=', finDeMes)
-				.where('uidusuario', '==', usuario.uid)
+				.where('fecha', '>=', inicioDeMes)
+				.where('fecha', '<=', finDeMes)
+				.where('uidUsuario', '==', usuario.uid)
 				.onSnapshot((snapshot) => {
 					establecerGastos(
 						snapshot.docs.map((documento) => {
@@ -29,12 +29,12 @@ const useObtenerGastosDelMes = () => {
 					);
 				});
 			// useEffect tiene que retornar una funcion que se va a ejecutar cuando se desmonte el componente.
-			// En este caso queremos que ejecuta el darDeBaja a la colleccion de firestore.
-			return darDeBaja;
+			// En este caso queremos que ejecuta el unsubscribe a la colleccion de firestore.
+			return unsubscribe;
 		}
 	}, [usuario]);
 
-	return [gastos];
+	return gastos;
 };
 
 export default useObtenerGastosDelMes;
