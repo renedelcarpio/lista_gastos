@@ -34,7 +34,6 @@ const useObtenerGastosDelMesPorCategoria = () => {
 				'diversion': 0,
 			}
 		);
-		//console.log(sumaDeGastos);
 
 		cambiarGastosPorCategoria(
 			Object.keys(sumaDeGastos).map((elemento) => {
